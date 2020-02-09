@@ -2,6 +2,8 @@ package com.nbicc.community.controller;
 
 import com.nbicc.community.dto.AccessTokenDTO;
 import com.nbicc.community.dto.GithubUser;
+import com.nbicc.community.mapper.UserMapper;
+import com.nbicc.community.model.User;
 import com.nbicc.community.provider.GithubProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.UUID;
 
 @Controller
 public class AuthorizeController {
@@ -17,6 +20,10 @@ public class AuthorizeController {
     AccessTokenDTO accessTokenDTO;
     @Autowired
     GithubProvider githubProvider;
+    @Autowired
+    User user;
+    @Autowired
+    UserMapper userMapper;
     @Value("${github.client.id}")
     String clientId;
     @Value("${github.redirect.uri}")
@@ -33,6 +40,12 @@ public class AuthorizeController {
         String accessToken = githubProvider.getAccessToken(accessTokenDTO);
         GithubUser githubUser = githubProvider.getGithubUser(accessToken);
         if (githubUser!=null){
+            user.setName(githubUser.getName());
+            user.setAccountId(String.valueOf(githubUser.getId()));
+            user.setGmtCreate(System.currentTimeMillis());
+            user.setGmtModified(user.getGmtCreate());
+            user.setToken(UUID.randomUUID().toString());
+            userMapper.insertUser(user);
             request.getSession().setAttribute("user",githubUser);
             return "redirect:/";
         }else{
