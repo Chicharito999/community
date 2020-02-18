@@ -88,4 +88,8 @@ public class QuestionService {
         questionDTO.setUser(user);
         return questionDTO;
     }
+
+    public void incViewCount(Integer id) {
+        questionMapper.incVeiwCount(id);
+    }
 }
