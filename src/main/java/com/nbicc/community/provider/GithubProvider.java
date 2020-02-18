@@ -40,7 +40,7 @@ public class GithubProvider {
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
-                .url(userUrl+"=" + accessToken)
+                .url(userUrl + "=" + accessToken)
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
