@@ -3,6 +3,7 @@ package com.nbicc.community.provider;
 import com.alibaba.fastjson.JSON;
 import com.nbicc.community.dto.AccessTokenDTO;
 import com.nbicc.community.dto.GithubUser;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

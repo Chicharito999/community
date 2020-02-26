@@ -1,5 +1,8 @@
 package com.nbicc.community.interceptor;
 
+import com.nbicc.community.exception.CustomizeErrorCode;
+import com.nbicc.community.exception.MyException;
+import com.nbicc.community.mapper.NotificationMapper;
 import com.nbicc.community.mapper.UserMapper;
 import com.nbicc.community.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 public class SessionIntercepor implements HandlerInterceptor {
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private NotificationMapper notificationMapper;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -24,6 +29,11 @@ public class SessionIntercepor implements HandlerInterceptor {
                 if ("token".equals(cookie.getName())) {
                     String token = cookie.getValue();
                     User user = userMapper.findByToken(token);
+                    if (user==null){
+                        throw new MyException(CustomizeErrorCode.NOTEXIST);
+                    }
+                    Integer unreadCount = notificationMapper.readCount(new Integer(user.getId()).longValue());
+                    request.getSession().setAttribute("unreadCount",unreadCount);
                     request.getSession().setAttribute("user", user);
                     break;
                 }

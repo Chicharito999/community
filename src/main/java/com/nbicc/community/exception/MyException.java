@@ -2,8 +2,10 @@ package com.nbicc.community.exception;
 
 public class MyException extends RuntimeException {
     private String message;
+    private String code;
 
-    public MyException(String message) {
+    public MyException(String code, String message) {
+        this.code = code;
         this.message = message;
     }
 
@@ -16,5 +18,7 @@ public class MyException extends RuntimeException {
         return this.message;
     }
 
-
+    public String getCode() {
+        return this.code;
+    }
 }
